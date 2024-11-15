@@ -1,0 +1,18 @@
+{
+    "compilerOptions": {
+        "target": "es5", // 目标输出版本 (es5 或 es6)
+        "module": "CommonJS", // 使用 ES 模块
+        "strict": true, // 启用严格模式
+        "jsx": "react", // React JSX 转换，如果不是 React 可以省略
+        "moduleResolution": "node", // 使用 Node 的模块解析策略
+        "esModuleInterop": true, // 允许默认导入非 ES 模块
+        "skipLibCheck": true, // 跳过库文件的类型检查
+        "forceConsistentCasingInFileNames": true
+    },
+    "include": [
+        "lib/**/*" // 需要编译的源文件
+    ],
+    "exclude": [
+        "node_modules" // 排除 node_modules
+    ]
+}
