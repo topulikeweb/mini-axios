@@ -1,13 +1,19 @@
-import { buildUrl } from "./tool"
+import defaults from "../default/defaults"
+import { buildUrl, mergeConfig } from "../tool"
 import { AxiosRequestConfig, AxiosResponseConfig } from "../type"
 
-const defaultConfig: AxiosRequestConfig = {
-    url: 'http://api.example.com',
-    method: 'GET'
-}
-function AxiosRequest(config: AxiosRequestConfig) {
+
+export default function AxiosRequest(config: AxiosRequestConfig) {
+    const { transformRequest, transformResponse, data, headers } = config
     return new Promise((resolve, reject) => {
+        // 处理请求数据
+        let requestData = data
+        transformRequest?.forEach(fn => {
+            requestData = fn(requestData, headers)
+        })
+
         const request = new XMLHttpRequest()
+        console.log(config)
         request.open(config.method!.toUpperCase(), buildUrl(config.url!, config.params))
         request.timeout = config.timeout!
 
@@ -21,12 +27,15 @@ function AxiosRequest(config: AxiosRequestConfig) {
                 return
             }
             if (request.status >= 200 && request.status < 300) {
+                let requestStatusText = request.responseText
                 let response: AxiosResponseConfig = {
                     status: request.status,
-                    data: JSON.parse(request.responseText),
+                    data: transformResponse?.forEach(fn => {
+                        requestStatusText = fn(requestStatusText)
+                    }),
                     statusText: request.statusText,
                     config: config,
-                        headers: request.getAllResponseHeaders().split('/n').reduce((prev, curr) => {
+                    headers: request.getAllResponseHeaders().split('/n').reduce((prev, curr) => {
                         let [key, value] = curr.split(': ')
                         if (key as unknown) {
                             prev[key] = value
@@ -40,7 +49,6 @@ function AxiosRequest(config: AxiosRequestConfig) {
                 reject(new Error('failed'))
             }
         }
-
     })
 }
 
