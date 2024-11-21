@@ -14,52 +14,46 @@ const adapters = [{
     name: 'http',
     target: 'commonjs'
 }]
-const generateConfig = (adapters) => {
-    return adapters.map((adapter) => {
-        const { name, target } = adapter
-        return {
-            entry: `./lib/adapters/${name}.ts`,
-            output: {
-                filename: `${name}.js`,
-                path: path.resolve(__dirname, `dist`),
-                library: 'miniAxios',
-                libraryTarget: target,
-                globalObject: 'this',
+
+const baseConfig = {
+    resolve: {
+        extensions: ['.ts', '.js'],
+        fallback: {
+            url: 'url',
+            http: 'stream-http',
+            https: 'https-browserify',
+            crypto: 'crypto-browserify',
+            stream: 'stream-browserify',
+            buffer: 'buffer',
+        },
+    },
+    module: {
+        rules: [
+            {
+                test: /\.ts$/,
+                use: 'ts-loader',
+                exclude: /node_modules/,
             },
-            resolve: {
-                extensions: ['.ts', '.js'],
-                fallback: {
-                    url: 'url',
-                    http: 'stream-http',
-                    https: 'https-browserify',
-                    crypto: 'crypto-browserify',
-                    stream: 'stream-browserify',
-                    buffer: 'buffer',
-                },
-            },
-            devServer: {
-                static: {
-                    directory: path.join(__dirname, 'dist'),
-                },
-                port: 3000,
-                open: true,
-                hot: true,
-                compress: true,
-            },
-            module: {
-                rules: [
-                    {
-                        test: /\.ts$/,
-                        use: 'ts-loader',
-                        exclude: /node_modules/,
-                    },
-                ],
-            },
-            mode: 'production',
-        }
-    })
+        ],
+    },
+    mode: 'production',
 }
 
-let config = {}
+const generateConfig = (adapters) => {
+    return adapters.map(({ name, target }) => ({
+        ...baseConfig, // 引用通用配置
+        entry: `./lib/adapters/${name}.ts`,
+        output: {
+            filename: `${name}.js`,
+            path: path.resolve(__dirname, `dist`),
+            library: 'miniAxios',
+            libraryTarget: target,
+            globalObject: 'this',
+        },
+    }))
+}
+
+
+let config = []
 config = generateConfig(adapters)
 export default config
