@@ -10,7 +10,6 @@ class MiniAxios {
     // get 请求
     get(config: AxiosRequestConfig) {
         config = mergeConfig(defaults, config)
-        console.log(defaults,22)
         return AxiosRequest({ ...config, method: 'GET' })
     }
     // post 请求

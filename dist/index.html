@@ -4,15 +4,15 @@
 <head>
     <meta charset="UTF-8">
     <title>miniAxios Test</title>
-    <script src="./bundle.js"></script>
+    <script src="./fetch.js"></script>
 </head>
 
 <body>
     <script type="module">
-        console.log(miniAxios.default.get())
         miniAxios.default.get({
-            url: 'https://jsonplaceholder.typicode.com/todos/1',
-            
+            url: 'https://jsonplaceholder.typicode.com/posts',
+        }).then(res => {
+            console.log(res)
         })
     </script>
 </body>

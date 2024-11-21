@@ -1,5 +1,5 @@
 type RequireMethod = 'GET' | 'POST'
-
+type Adapter = (config: AxiosRequestConfig) => Promise<AxiosResponseConfig>
 export interface AxiosRequestConfig {
     url?: string;
     method?: Method;
@@ -9,7 +9,7 @@ export interface AxiosRequestConfig {
     data?: any;
     timeout?: number;
     responseType?: 'json' | 'text' | 'blob' | 'arraybuffer';
-
+    adapter?: Adapter
     // 用于请求前的数据转换
     transformRequest?: Array<(data: any, headers?: any) => any>;
 
