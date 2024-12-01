@@ -1,30 +1,23 @@
 import path from 'path';
-import { fileURLToPath } from 'url';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
-const adapters = [{
-    name: 'xhr',
-    target: 'umd'
-}, {
-    name: 'fetch',
-    target: 'umd'
-}, {
-    name: 'http',
-    target: 'commonjs'
-}]
-
-const baseConfig = {
+export default {
+    entry: './lib/mini-axios.ts',
+    output: {
+        filename: 'bundle.js',
+        path: path.resolve(process.cwd(), 'dist'),
+        library: {
+            type: 'module', // 确保输出为 ESM
+        },
+    },
+    experiments: {
+        outputModule: true, // 启用模块化输出
+    },
     resolve: {
         extensions: ['.ts', '.js'],
         fallback: {
-            url: 'url',
-            http: 'stream-http',
-            https: 'https-browserify',
-            crypto: 'crypto-browserify',
-            stream: 'stream-browserify',
-            buffer: 'buffer',
+            https: 'https-browserify', // 添加 https 模块的 polyfill
+            http: 'stream-http'
         },
     },
     module: {
@@ -37,23 +30,5 @@ const baseConfig = {
         ],
     },
     mode: 'production',
-}
-
-const generateConfig = (adapters) => {
-    return adapters.map(({ name, target }) => ({
-        ...baseConfig, // 引用通用配置
-        entry: `./lib/adapters/${name}.ts`,
-        output: {
-            filename: `${name}.js`,
-            path: path.resolve(__dirname, `dist`),
-            library: 'miniAxios',
-            libraryTarget: target,
-            globalObject: 'this',
-        },
-    }))
-}
-
-
-let config = []
-config = generateConfig(adapters)
-export default config
+    devtool: 'source-map',
+};

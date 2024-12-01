@@ -3,14 +3,45 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>miniAxios Test</title>
-    <script src="./fetch.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <!-- 引入 axios -->
 </head>
 
 <body>
     <script type="module">
-        
+        import miniAxios from './bundle.js'
+        miniAxios.interceptors.request.use(
+            (response) => {
+                console.log("响应拦截器1: 格式化数据");
+                response.data = {
+                    success: true,
+                    payload: response.data,
+                };
+
+                return response;
+            },
+            (error) => {
+                console.error("响应拦截器1错误:", error);
+                return Promise.reject(error);
+            }
+        );
+        // miniAxios.get({
+        //     url: 'https://jsonplaceholder.typicode.com/users'
+        // }).then(response => {
+        //     console.log(response.data);
+        // }).catch(error => {
+        //     console.error('There was an error!', error);
+        // });
+        miniAxios({
+            method: 'GET',
+            url: 'https://jsonplaceholder.typicode.com/users'
+        }).then(res => {
+            console.log(res)
+        })
+
+
     </script>
-</body>
 
 </html>
