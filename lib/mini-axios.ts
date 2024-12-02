@@ -48,7 +48,6 @@ class MiniAxios {
     let chain = [...requestChain, ...responseChain]
 
     let promise = Promise.resolve(config)
-    console.log(chain, 'chain')
 
     while (chain.length !== 0) {
       const {onFulfilled, onRejected} = chain.shift()!;
@@ -82,7 +81,8 @@ function createInstance(defaultConfig: AxiosRequestConfig) {
       const typedKey = key as keyof MiniAxios;
       if (typeof context[typedKey] === "function") {
         // @ts-ignore
-        instance[typedKey] = context[typedKey].bind(context);
+        instance[typedKey] = context[typedKey].bind(context)
+        ;
       }
     }
   });
